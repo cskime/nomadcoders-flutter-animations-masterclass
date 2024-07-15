@@ -28,20 +28,18 @@ class _ImplicitAnimationsScreenState extends State<ImplicitAnimationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedAlign(
-              alignment: _visible ? Alignment.topLeft : Alignment.topRight,
+            AnimatedContainer(
               duration: const Duration(seconds: 1),
-              child: AnimatedOpacity(
-                opacity: _visible ? 1 : 0.2,
-                duration: const Duration(seconds: 1),
-                child: Container(
-                  width: size.width * 0.8,
-                  height: size.width * 0.8,
-                  color: Colors.amber,
-                ),
+              width: size.width * 0.8,
+              height: size.width * 0.8,
+              transform: Matrix4.rotationZ(_visible ? 1 : 0),
+              transformAlignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: _visible ? Colors.red : Colors.amber,
+                borderRadius: BorderRadius.circular(_visible ? 100 : 0),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 50),
             ElevatedButton(
               onPressed: _trigger,
               child: const Text("Go"),
