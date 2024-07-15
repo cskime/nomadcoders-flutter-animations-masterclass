@@ -19,7 +19,6 @@ class _ImplicitAnimationsScreenState extends State<ImplicitAnimationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Implicit Animations"),
@@ -28,17 +27,20 @@ class _ImplicitAnimationsScreenState extends State<ImplicitAnimationsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedContainer(
-              duration: const Duration(seconds: 2),
-              curve: Curves.elasticOut,
-              width: size.width * 0.8,
-              height: size.width * 0.8,
-              transform: Matrix4.rotationZ(_visible ? 1 : 0),
-              transformAlignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: _visible ? Colors.red : Colors.amber,
-                borderRadius: BorderRadius.circular(_visible ? 100 : 0),
+            TweenAnimationBuilder(
+              tween: ColorTween(
+                begin: _visible ? Colors.red : Colors.black,
+                end: _visible ? Colors.black : Colors.red,
               ),
+              duration: const Duration(seconds: 5),
+              curve: Curves.bounceInOut,
+              builder: (context, value, child) {
+                return Icon(
+                  Icons.apple,
+                  size: 60,
+                  color: value,
+                );
+              },
             ),
             const SizedBox(height: 50),
             ElevatedButton(

@@ -19,3 +19,21 @@
 - Animation이 실행되는 curve 함수 설정
 - `Curves` abstract class의 static 속성들 사용
 - Default는 `Curves.linear`
+
+## TweenAnimationBuilder
+
+- Implicit animation widget을 직접 만들 수 있는 builder widget
+- Built-in implicit animation widget 중에서 필요한 것을 찾지 못하면 `TweenAnimatedBuilder`를 사용해서 implicit animation을 직접 만들 수 있다.
+- `Tween`
+  - target of the animation
+  - animation의 시작과 끝 값을 지정해서 범위를 만든다.
+  - animation은 `Tween`의 `begin`과 `end` 사이의 값으로 만들어진다.
+- `ColorTween` : `Tween`의 color version
+- `TweenAnimationBuilder`
+  - `tween`
+    - Animation target
+    - `begin`, `end` 사잇값을 계산해서 `builder` 함수로 전달한다.
+  - `builder`
+    - `value`로 animation value가 전달된다.
+    - `value` 값을 사용하는 widget을 반환해서 매 animation frame마다 변화된 widget을 보여준다.
+    - Widget이 빠르게 바뀌면서 animation 처럼 보이게 된다.
