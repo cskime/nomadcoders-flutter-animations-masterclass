@@ -12,3 +12,10 @@
   - `AnimatedOpacity` : opacity에 animation 적용
   - `AnimatedAlign` : alignment에 animation 적용
   - `AnimatedContainer` : `Container`에서 사용할 수 있는 모든 요소에 대해 animation 적용
+- Animation을 일시정지 하는 등 detail한 설정을 할 수는 없지만, 단순한 animation을 쉽게 적용할 수 있다는 장점이 있다.
+
+## Curves
+
+- Animation이 실행되는 curve 함수 설정
+- `Curves` abstract class의 static 속성들 사용
+- Default는 `Curves.linear`
