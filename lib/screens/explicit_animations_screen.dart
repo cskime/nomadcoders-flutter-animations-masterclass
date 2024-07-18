@@ -10,10 +10,12 @@ class ExplicitAnimationsScreen extends StatefulWidget {
 
 class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     with SingleTickerProviderStateMixin {
-  late final _animationController = AnimationController(
+  late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 3),
-  );
+  )..addListener(() {
+      _sliderValue.value = _animationController.value;
+    });
 
   late final Animation<Decoration> _decoration = DecorationTween(
     begin: BoxDecoration(
@@ -67,6 +69,15 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     super.dispose();
   }
 
+  final _sliderValue = ValueNotifier(0.0);
+
+  void _onChanged(double value) {
+    setState(() {
+      _sliderValue.value = value;
+      _animationController.value = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +112,15 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
                 ElevatedButton(onPressed: _pause, child: const Text("Pause")),
                 ElevatedButton(onPressed: _rewind, child: const Text("Rewind")),
               ],
-            )
+            ),
+            const SizedBox(height: 24),
+            ValueListenableBuilder(
+              valueListenable: _sliderValue,
+              builder: (context, value, child) => Slider(
+                value: value,
+                onChanged: _onChanged,
+              ),
+            ),
           ],
         ),
       ),

@@ -99,3 +99,19 @@
   - `reverseCurve` : reverse animation curve
 - `CurvedAnimation.parent`에 `AnimationController`를 넣어서 animation value 연결
 - 이전에는 `Animation`을 만들기 위해 `animate`에 `AnimationController`를 넣었지만, 이제 `CurvedAnimation`을 사용해서 curved animation을 만들고 있으므로 `AnimationController` 대신 `CurvedAnimation`을 넣어준다.
+
+## Animation value 변경하기
+
+1. `forward()`, `reverse()` :
+   - `AnimationController` 내부적으로 `value` 값을 animation frame마다 변경
+2. `AnimationController.value`
+   - Animation은 `AnimationController.value` 값이 변경될 때 마다 UI를 변경된 값으로 다시 그리는 것
+   - 즉, `value` 값을 직접 바꾸면 특정 시점 UI를 animation 없이 얻을 수 있다.
+3. `AnimationController.animateTo`
+   - `animateTo` method를 사용하면 animation과 함께 특정 value에 해당하는 UI로 바뀐다.
+
+## ValueNotifier
+
+- Animation이 동작하는 동안 `AnimationController.value` 변경사항을 listen해서 다른 widget을 update
+- `ValueNotifier`를 사용하면 값이 변경되었을 때 `setState`를 호출하지 않아도 특정 부분의 widget만 update 할 수 있다.
+- `ValueNotifier.value`의 변경사항을 widget에서 listen하려면 `ValueListenableBuilder` 사용
