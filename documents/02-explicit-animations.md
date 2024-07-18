@@ -23,6 +23,8 @@
   - `State` class에 `SingleTickerProviderStateMixin`을 mixed in 하고, `vsync`에 `this` 전달
   - `AnimationController`로 animation을 실행시킬 때, device의 주사율에 맞춰 빠르고 부드러운 animation을 실행시킬 수 있도록 `Ticker`를 사용한다.
   - Animation 실행 코드를 `Ticker`의 callback으로 등록해서 매 animation frame마다 실행되도록 만드는 것
+- `AnimationController`는 `dispose()`에서 항상 명시적으로 dispose 시켜야 함
+  - Animation이 실행중일 때 pop 등으로 widget이 사라지면 runtime error 발생
 - Constructor
   - `duration` : animation 실행 시간
   - `lowerbound`, `upperbound` : animation의 시작/끝 값 (`0.0` ~ `1.0` default)
@@ -48,6 +50,9 @@
 - `AnimationController`는 animation을 제어(control)하는 역할만 하고, animation value는 `Tween` 또는 `ColorTween`과 연결해서 사용하는게 좋다.
 - `AnimationController`는 `lowerBounds`와 `upperBounds`의 `double` type 값만 사용할 수 있는데, `Tween`에 연결하면 `Tween`이 `lowerBounds`와 `upperBounds`의 값을 가지고 자신의 `begin`, `end` 값에 매핑해서 animation value를 계산해 준다.
 - `lowerBounds`와 `upperBounds`의 기본값인 0과 1을 기준으로 `Tween`에서 설정한 `begin`, `end` 값을 계산하도록 만듦
+  - `0.0` -> `Colors.amber`
+  - `1.0` -> `Colors.red`
+  - Animation이 동작하는 동안, 0에서 1 사이의 값으로 `amber`와 `red` 사이 색상값 계산
 
 ## AnimationBuilder
 
@@ -60,3 +65,28 @@
   - `AnimationController`의 값을 listen하고 있다가, 값이 변경되면 바뀐 값을 UI에 반영시켜 주는 widget
   - 매 animation frame마다`AnimationController.value`가 바뀔 때 UI를 update할 수 있는 widget
   - Explicit widget을 찾을 수 없을 때 사용하는게 좋다.
+
+## Explicit animation widgets
+
+- Flutter SDK는 `~Transition`으로 끝나는 build-in explicit animation widget을 제공함
+- `AnimatedBuilder`만 여러 개 사용하는 것 보다, 용도에 맞는 `~Transition` widget을 사용하는게 가독성에 더 좋을 것
+- `AnimationController` 하나를 여러 `Tween`에 연결해서 다수의 animation들에 대한 sync를 맞출 수 있다.
+- `~Transition` widget에 넣어줄 `Animation` 값은 animation을 적용할 값에 대한 `Tween`으로부터 만든다.
+  - `int`, `double`, `Offset` 등 단순한 type의 값이 필요하다면 `Tween` 사용
+  - 그 외 object가 필요하다면 특화된 `~Tween` 사용
+    - `Color` -> `ColorTween`
+    - `Decoration` -> `DecorationTween`
+- Widgets
+  - `DecoratedBoxTransition`
+    - `decoration`에 `Animation<Decoration>`을 받아서 decoration 속성에 대한 animation 실행
+    - `DecorationTween`을 만들고 `animate()`로 `AnimationController`와 연결
+  - `RotationTransition`
+    - `turns`에 `Animation<double>`을 받아서 rotation animation 실행
+    - `Tween`을 만들고 `animate()`로 `AnimationController`와 연결
+  - `ScaleTransition`
+    - `scale`에 `Animation<double>`을 받아서 scale animation 실행
+    - `Tween`을 만들고 `animate()`로 `AnimationController`와 연결
+  - `SlideTransition`
+    - `position`에 `Animation<Offset>`을 받아서 translation animation 실행
+    - `Offset` 값으로 `Tween`을 만들고 `animate()`로 `AnimationController`와 연결
+    - 이 때, `Offset`은 상대적인 값(fractional). `width`가 400인데 400만큼 오른쪽으로 이동하고 싶다면 `dx`에 `1.0`을 넣어야 함
