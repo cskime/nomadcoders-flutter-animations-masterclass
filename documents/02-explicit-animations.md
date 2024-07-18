@@ -31,19 +31,6 @@
   - `stop()` : animaiton 정지
   - `reverse()` : animation 되감기 (역방향 재생)
 
-### Communication between UI and a value of AnimationController
-
-1. Animation frame마다 `setState`로 화면 갱신
-   - `AnimationController.addListener`에 `setState`를 호출하는 listener 등록
-   - 매 animation frame마다 `setState`가 호출되며 widget을 rebuild한다.
-   - 화면 전체를 여러 번 빠르게 rebuild 하는 건 성능 상 좋지 않은 방법
-2. `AnimationBuilder` 사용
-   - `AnimationController`의 값을 listen하고 있다가, 값이 변경되면 바뀐 값을 UI에 반영시켜 주는 widget
-   - 매 animation frame마다`AnimationController.value`가 바뀔 때 UI를 update할 수 있는 widget
-3. `Tween` 사용
-   - `Tween`은 animation의 시작/끝 value를 설정함
-   - `AnimationController` value를 `Tween`에 연결해서 사용
-
 ### SingleTickerProviderMixin
 
 - `Ticker` : calls its callback once per animation frame
@@ -52,3 +39,24 @@
 - `SingleTickerProviderStateMixin`은 **실제로 `Ticker`를 사용하는 widget이 tree에 붙어서 enabled 되었을 때만 동작**하도록 관리해 준다.
 - Ticker를 필요할 때만 실행시키므로 resource를 효율적으로 사용할 수 있다.
 - `TickerProviderStateMixin`은 `AnimationController`가 여러 개일 때 ticker도 여러 개 사용하기 위한 것
+
+### Tween과 AnimationController
+
+- `Tween`은 animation의 시작/끝 value를 설정함 (Color는 `ColorTween` 사용)
+- `Tween`을 만들고 `animate()` method에 `AnimationController`를 전달해서 animation value에 연결
+  - 이 때, 연결된 값은 `Animation` type의 object
+- `AnimationController`는 animation을 제어(control)하는 역할만 하고, animation value는 `Tween` 또는 `ColorTween`과 연결해서 사용하는게 좋다.
+- `AnimationController`는 `lowerBounds`와 `upperBounds`의 `double` type 값만 사용할 수 있는데, `Tween`에 연결하면 `Tween`이 `lowerBounds`와 `upperBounds`의 값을 가지고 자신의 `begin`, `end` 값에 매핑해서 animation value를 계산해 준다.
+- `lowerBounds`와 `upperBounds`의 기본값인 0과 1을 기준으로 `Tween`에서 설정한 `begin`, `end` 값을 계산하도록 만듦
+
+## AnimationBuilder
+
+- Animation value를 UI로 보여주는 방법
+- Animation frame마다 `setState`로 화면을 갱신하는 방법
+  - `AnimationController.addListener`에 `setState`를 호출하는 listener 등록
+  - 매 animation frame마다 `setState`가 호출되며 widget을 rebuild한다.
+  - 화면 전체를 여러 번 빠르게 rebuild 하는 건 성능 상 좋지 않다.
+- `AnimationBuilder` 사용
+  - `AnimationController`의 값을 listen하고 있다가, 값이 변경되면 바뀐 값을 UI에 반영시켜 주는 widget
+  - 매 animation frame마다`AnimationController.value`가 바뀔 때 UI를 update할 수 있는 widget
+  - Explicit widget을 찾을 수 없을 때 사용하는게 좋다.
