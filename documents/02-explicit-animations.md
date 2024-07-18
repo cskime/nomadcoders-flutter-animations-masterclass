@@ -25,11 +25,24 @@
   - Animation 실행 코드를 `Ticker`의 callback으로 등록해서 매 animation frame마다 실행되도록 만드는 것
 - Constructor
   - `duration` : animation 실행 시간
-  - `begin`, `end` : animation의 시작/끝 값 (`0.0` ~ `1.0` default)
+  - `lowerbound`, `upperbound` : animation의 시작/끝 값 (`0.0` ~ `1.0` default)
 - Controls
   - `forward()` : animation 재생
   - `stop()` : animaiton 정지
   - `reverse()` : animation 되감기 (역방향 재생)
+
+### Communication between UI and a value of AnimationController
+
+1. Animation frame마다 `setState`로 화면 갱신
+   - `AnimationController.addListener`에 `setState`를 호출하는 listener 등록
+   - 매 animation frame마다 `setState`가 호출되며 widget을 rebuild한다.
+   - 화면 전체를 여러 번 빠르게 rebuild 하는 건 성능 상 좋지 않은 방법
+2. `AnimationBuilder` 사용
+   - `AnimationController`의 값을 listen하고 있다가, 값이 변경되면 바뀐 값을 UI에 반영시켜 주는 widget
+   - 매 animation frame마다`AnimationController.value`가 바뀔 때 UI를 update할 수 있는 widget
+3. `Tween` 사용
+   - `Tween`은 animation의 시작/끝 value를 설정함
+   - `AnimationController` value를 `Tween`에 연결해서 사용
 
 ### SingleTickerProviderMixin
 
