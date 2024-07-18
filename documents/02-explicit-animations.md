@@ -26,7 +26,8 @@
 - `AnimationController`는 `dispose()`에서 항상 명시적으로 dispose 시켜야 함
   - Animation이 실행중일 때 pop 등으로 widget이 사라지면 runtime error 발생
 - Constructor
-  - `duration` : animation 실행 시간
+  - `duration` : forward animation 실행 시간
+  - `reverseDuration` : reverse animation 실행 시간
   - `lowerbound`, `upperbound` : animation의 시작/끝 값 (`0.0` ~ `1.0` default)
 - Controls
   - `forward()` : animation 재생
@@ -90,3 +91,11 @@
     - `position`에 `Animation<Offset>`을 받아서 translation animation 실행
     - `Offset` 값으로 `Tween`을 만들고 `animate()`로 `AnimationController`와 연결
     - 이 때, `Offset`은 상대적인 값(fractional). `width`가 400인데 400만큼 오른쪽으로 이동하고 싶다면 `dx`에 `1.0`을 넣어야 함
+
+## CurvedAnimation
+
+- `CurvedAnimation(parent,curve)`를 만들어서 curved animation 생성
+  - `curve` : forward animation curve
+  - `reverseCurve` : reverse animation curve
+- `CurvedAnimation.parent`에 `AnimationController`를 넣어서 animation value 연결
+- 이전에는 `Animation`을 만들기 위해 `animate`에 `AnimationController`를 넣었지만, 이제 `CurvedAnimation`을 사용해서 curved animation을 만들고 있으므로 `AnimationController` 대신 `CurvedAnimation`을 넣어준다.
