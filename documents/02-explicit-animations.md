@@ -23,6 +23,13 @@
   - `State` class에 `SingleTickerProviderStateMixin`을 mixed in 하고, `vsync`에 `this` 전달
   - `AnimationController`로 animation을 실행시킬 때, device의 주사율에 맞춰 빠르고 부드러운 animation을 실행시킬 수 있도록 `Ticker`를 사용한다.
   - Animation 실행 코드를 `Ticker`의 callback으로 등록해서 매 animation frame마다 실행되도록 만드는 것
+- Constructor
+  - `duration` : animation 실행 시간
+  - `begin`, `end` : animation의 시작/끝 값 (`0.0` ~ `1.0` default)
+- Controls
+  - `forward()` : animation 재생
+  - `stop()` : animaiton 정지
+  - `reverse()` : animation 되감기 (역방향 재생)
 
 ### SingleTickerProviderMixin
 
