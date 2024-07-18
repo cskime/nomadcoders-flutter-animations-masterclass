@@ -8,7 +8,10 @@ class ExplicitAnimationsScreen extends StatefulWidget {
       _ExplicitAnimationsScreenState();
 }
 
-class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen> {
+class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
+    with SingleTickerProviderStateMixin {
+  late final _animationController = AnimationController(vsync: this);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
