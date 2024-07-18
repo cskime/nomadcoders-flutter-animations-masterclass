@@ -115,3 +115,33 @@
 - Animation이 동작하는 동안 `AnimationController.value` 변경사항을 listen해서 다른 widget을 update
 - `ValueNotifier`를 사용하면 값이 변경되었을 때 `setState`를 호출하지 않아도 특정 부분의 widget만 update 할 수 있다.
 - `ValueNotifier.value`의 변경사항을 widget에서 listen하려면 `ValueListenableBuilder` 사용
+
+## AnimationController Listener
+
+- `AnimationController.addListener` : `value` 값이 변경될 때 마다 listener 호출
+- `AnimationController.addStatusListener` : animation status가 변경될 때 마다 listener ghcnf
+  - Animation의 상태(forward, reverse, completed, dismissed)를 listen
+  - Animation이 끝났을 때(completed) 다른 animation을 실행시키는 등 구현
+
+## Repeating animation
+
+1. `AnimationController.addStatusListener`에 listener를 등록하고, status에 따라 `forward()` 또는 `reverse()` 실행
+   ```dart
+   late final AnimationController _animationController = AnimationController(
+        ...
+   )
+   ..addStatusListener(
+        (status) {
+           // animation이 upperbounds에서 끝났을 때
+           if (status == AnimationStatus.completed) {
+               _animationController.reverse();
+           }
+           // animation이 lowerbounds에서 끝났을 때
+           else if (status == AnimationStatus.dismissed) {
+               _animationController.forward();
+           }
+        });
+   ```
+2. `AnimationController.repeat(min, max, reverse, period)` method 사용
+   - `reverse`를 `true`로 설정해야 되감기로 동작
+   - `min`, `max`로 반복 횟수를 조절할 수 있음

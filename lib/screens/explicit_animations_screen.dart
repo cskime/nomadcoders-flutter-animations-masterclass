@@ -78,6 +78,20 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
     });
   }
 
+  var _looping = false;
+
+  void _toggleLooping() {
+    if (_looping) {
+      _animationController.stop();
+    } else {
+      _animationController.repeat(reverse: true);
+    }
+
+    setState(() {
+      _looping = !_looping;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +125,10 @@ class _ExplicitAnimationsScreenState extends State<ExplicitAnimationsScreen>
                 ElevatedButton(onPressed: _play, child: const Text("Play")),
                 ElevatedButton(onPressed: _pause, child: const Text("Pause")),
                 ElevatedButton(onPressed: _rewind, child: const Text("Rewind")),
+                ElevatedButton(
+                  onPressed: _toggleLooping,
+                  child: Text(_looping ? "Stop Looping" : "Start Looping"),
+                ),
               ],
             ),
             const SizedBox(height: 24),
