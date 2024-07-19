@@ -13,7 +13,7 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
     with SingleTickerProviderStateMixin {
   late final _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 2000),
+    duration: const Duration(seconds: 1),
   )..forward();
 
   late final _animation = CurvedAnimation(
@@ -21,22 +21,26 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
     curve: Curves.bounceOut,
   );
 
-  late var _progress = Tween(
-    begin: 0.005,
-    end: 2.0,
-  ).animate(_animation);
+  Tween<double> nextRandomTween({double begin = 0.005}) => Tween(
+        begin: begin,
+        end: Random().nextDouble() * 2,
+      );
+
+  late var _redProgress = nextRandomTween().animate(_animation);
+  late var _greenProgress = nextRandomTween().animate(_animation);
+  late var _blueProgress = nextRandomTween().animate(_animation);
 
   void _onAnimationPressed() {
-    final newBegin = _progress.value;
-    final random = Random();
-    final newEnd = random.nextDouble() * 2.0;
-    final newTween = Tween(
-      begin: newBegin,
-      end: newEnd,
-    ).animate(_animation);
-
     setState(() {
-      _progress = newTween;
+      _redProgress = nextRandomTween(
+        begin: _redProgress.value,
+      ).animate(_animation);
+      _greenProgress = nextRandomTween(
+        begin: _greenProgress.value,
+      ).animate(_animation);
+      _blueProgress = nextRandomTween(
+        begin: _blueProgress.value,
+      ).animate(_animation);
       _animationController.forward(from: 0);
     });
   }
@@ -58,12 +62,20 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
       ),
       body: Center(
         child: AnimatedBuilder(
-          animation: _progress,
-          builder: (context, child) => CustomPaint(
-            painter: AppleWatchPainter(
-              progress: _progress.value,
+          animation: _redProgress,
+          builder: (context, child) => AnimatedBuilder(
+            animation: _greenProgress,
+            builder: (context, child) => AnimatedBuilder(
+              animation: _blueProgress,
+              builder: (context, child) => CustomPaint(
+                painter: AppleWatchPainter(
+                  redProgress: _redProgress.value,
+                  greenProgress: _greenProgress.value,
+                  blueProgress: _blueProgress.value,
+                ),
+                size: const Size(400, 400),
+              ),
             ),
-            size: const Size(400, 400),
           ),
         ),
       ),
@@ -78,92 +90,92 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
 class AppleWatchPainter extends CustomPainter {
   AppleWatchPainter({
     super.repaint,
-    required this.progress,
+    required this.redProgress,
+    required this.greenProgress,
+    required this.blueProgress,
   });
 
-  final double progress;
+  final double redProgress;
+  final double greenProgress;
+  final double blueProgress;
+
+  final _strokeWidth = 24.0;
+
+  void _drawCircle({
+    required Canvas canvas,
+    required Offset center,
+    required double radius,
+    required Color color,
+  }) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _strokeWidth;
+    canvas.drawCircle(center, radius, paint);
+  }
+
+  void _drawArc({
+    required Canvas canvas,
+    required Offset center,
+    required double radius,
+    required Color color,
+    required double progress,
+  }) {
+    const startingAngle = -0.5 * pi;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = _strokeWidth
+      ..strokeCap = StrokeCap.round;
+    canvas.drawArc(
+      rect,
+      startingAngle,
+      progress * pi,
+      false,
+      paint,
+    );
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
 
-    final redCircleRadius = size.width / 2 * 0.9;
-    final redCirclePaint = Paint()
-      ..color = Colors.red.shade400.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24;
-    canvas.drawCircle(center, redCircleRadius, redCirclePaint);
+    final colors = [
+      Colors.red.shade400,
+      Colors.green.shade400,
+      Colors.blue.shade400,
+    ];
+    final radiuses =
+        [0.9, 0.75, 0.6].map((ratio) => size.width / 2 * ratio).toList();
+    final progresses = [
+      redProgress,
+      greenProgress,
+      blueProgress,
+    ];
 
-    final greenCircleRadius = size.width / 2 * 0.75;
-    final greenCirclePaint = Paint()
-      ..color = Colors.green.shade400.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24;
-    canvas.drawCircle(center, greenCircleRadius, greenCirclePaint);
+    for (int index = 0; index < colors.length; index++) {
+      _drawCircle(
+        canvas: canvas,
+        center: center,
+        radius: radiuses[index],
+        color: colors[index].withOpacity(0.3),
+      );
 
-    final blueCircleRadius = size.width / 2 * 0.6;
-    final blueCirclePaint = Paint()
-      ..color = Colors.blue.shade400.withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24;
-    canvas.drawCircle(center, blueCircleRadius, blueCirclePaint);
-
-    const startingAngle = -0.5 * pi;
-
-    final redArcRect = Rect.fromCircle(
-      center: center,
-      radius: redCircleRadius,
-    );
-    final redArcPaint = Paint()
-      ..color = Colors.red.shade400
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      redArcRect,
-      startingAngle,
-      progress * pi,
-      false,
-      redArcPaint,
-    );
-
-    final greenArcRect = Rect.fromCircle(
-      center: center,
-      radius: greenCircleRadius,
-    );
-    final greenArcPaint = Paint()
-      ..color = Colors.green.shade400
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      greenArcRect,
-      startingAngle,
-      progress * pi,
-      false,
-      greenArcPaint,
-    );
-
-    final blueArcRect = Rect.fromCircle(
-      center: center,
-      radius: blueCircleRadius,
-    );
-    final blueArcPaint = Paint()
-      ..color = Colors.blue.shade400
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 24
-      ..strokeCap = StrokeCap.round;
-    canvas.drawArc(
-      blueArcRect,
-      startingAngle,
-      progress * pi,
-      false,
-      blueArcPaint,
-    );
+      _drawArc(
+        canvas: canvas,
+        center: center,
+        radius: radiuses[index],
+        color: colors[index],
+        progress: progresses[index],
+      );
+    }
   }
 
   @override
   bool shouldRepaint(AppleWatchPainter oldDelegate) {
-    return progress != oldDelegate.progress;
+    return redProgress != oldDelegate.redProgress ||
+        greenProgress != oldDelegate.greenProgress ||
+        blueProgress != oldDelegate.blueProgress;
   }
 }
