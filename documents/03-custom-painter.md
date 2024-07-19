@@ -38,3 +38,10 @@
 
 - `Rect.fromCircle` : center와 radius로 rect area 정의
 - `Rect.fromLTWH` : left, top, width, height로 rect area 정의
+
+## Animated Paint
+
+- Explicit animation을 painting에 적용
+- `Random()` object를 만들어서 `nextDouble()` 등으로 random value 생성
+- Random value를 가지고 `Tween`을 교체해 줄 수 있음
+- 이 때, `AnimationController.forward(from)`의 `from`을 0으로 설정하면 animation을 처음부터 다시 재생함

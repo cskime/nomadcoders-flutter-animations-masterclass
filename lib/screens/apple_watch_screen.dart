@@ -14,12 +14,37 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
   late final _animationController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 2000),
-    lowerBound: 0.005,
-    upperBound: 2.0,
+  )..forward();
+
+  late final _animation = CurvedAnimation(
+    parent: _animationController,
+    curve: Curves.bounceOut,
   );
 
+  late var _progress = Tween(
+    begin: 0.005,
+    end: 2.0,
+  ).animate(_animation);
+
   void _onAnimationPressed() {
-    _animationController.forward();
+    final newBegin = _progress.value;
+    final random = Random();
+    final newEnd = random.nextDouble() * 2.0;
+    final newTween = Tween(
+      begin: newBegin,
+      end: newEnd,
+    ).animate(_animation);
+
+    setState(() {
+      _progress = newTween;
+      _animationController.forward(from: 0);
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,10 +58,10 @@ class _AppleWatchScreenState extends State<AppleWatchScreen>
       ),
       body: Center(
         child: AnimatedBuilder(
-          animation: _animationController,
+          animation: _progress,
           builder: (context, child) => CustomPaint(
             painter: AppleWatchPainter(
-              progress: _animationController.value,
+              progress: _progress.value,
             ),
             size: const Size(400, 400),
           ),
