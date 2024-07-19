@@ -15,6 +15,7 @@
     - `Canvas` object를 사용해서 painting code 작성
     - `CustomPaint.size`로 전달한 size가 parameter로 들어온다.
   - `shouldRepaint(oldDelegate)` : Repaint 여부 반환
+    - 
 
 ### Canvas
 
@@ -25,3 +26,15 @@
 - `draw~`로 canvas에 rendering
   - `drawRect(rect,paint)`
   - `drawCircle(offset,radius,paint)`
+
+### Paint
+
+- `color` : fill or stroke color
+- `style` : `PaintingStyle` 설정 (`stroke` or `fill`)
+- `strokeWidth` : `style`이 `PaintingStyle.stroke`일 때 두께
+- `strokeCap` : stokre 양 끝 모양 (e.g. `round`)
+
+### Rect
+
+- `Rect.fromCircle` : center와 radius로 rect area 정의
+- `Rect.fromLTWH` : left, top, width, height로 rect area 정의
