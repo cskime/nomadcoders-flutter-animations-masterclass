@@ -16,8 +16,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     vsync: this,
     duration: const Duration(milliseconds: 2000),
     value: 0,
-    lowerBound: size.width * -1,
-    upperBound: size.width,
+    lowerBound: (size.width + 100) * -1,
+    upperBound: (size.width + 100),
   );
 
   late final _rotation = Tween<double>(
@@ -30,7 +30,14 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
-    _animationController.animateTo(0, curve: Curves.bounceOut);
+    final bound = size.width - 200;
+    double target =
+        _animationController.value.abs() >= bound ? size.width + 100 : 0;
+    final goLeft = _animationController.value.isNegative;
+    _animationController.animateTo(
+      target * (goLeft ? -1 : 1),
+      curve: Curves.bounceOut,
+    );
   }
 
   @override
@@ -53,9 +60,10 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             (_animationController.value / 2 + size.width / 2) / size.width,
           );
           return Stack(
+            alignment: Alignment.topCenter,
             children: [
-              Align(
-                alignment: Alignment.topCenter,
+              Positioned(
+                top: 100,
                 child: GestureDetector(
                   onHorizontalDragUpdate: _onHorizontalDragUpdate,
                   onHorizontalDragEnd: _onHorizontalDragEnd,
