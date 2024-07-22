@@ -20,6 +20,7 @@
   - `AnimationController`의 value를 `target` 값으로 animation을 주면서 변경하는 방법
   - `curve`로 animation curve도 설정 가능
   - `AnimationController.value`에 직접 값을 넣는건 animation 없이 변경하는 것
+  - `whenComplete` method로 animation 완료 후 callback을 실행시킬 수 있다.
 - `AnimationController.value`에 직접 값을 더해 넣을 때, `lowerBound`와 `upperBound`에 제한되므로, 이 값을 더해지는 값의 범위로 바꿔주어야 함
   - `lowerBound`와 `upperBound`를 바꿀 때, 생성자에서 `value`를 0로 설정해 줘야 초기 위치를 initial position으로 잡을 수 있다.
 

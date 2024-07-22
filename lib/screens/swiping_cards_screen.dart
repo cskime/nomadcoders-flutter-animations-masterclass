@@ -29,13 +29,24 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     final bound = size.width - 200;
-    double target =
-        _animationController.value.abs() >= bound ? size.width + 100 : 0;
+    final shouldDismissed = _animationController.value.abs() >= bound;
+
+    if (!shouldDismissed) {
+      _animationController.animateTo(0, curve: Curves.easeInOut);
+      return;
+    }
+
     final goLeft = _animationController.value.isNegative;
-    _animationController.animateTo(
-      target * (goLeft ? -1 : 1),
-      curve: Curves.bounceOut,
-    );
+    double target = (size.width + 100) * (goLeft ? -1 : 1);
+
+    _animationController
+        .animateTo(target, curve: Curves.easeInOut)
+        .whenComplete(() {
+      _animationController.value = 0;
+      setState(() {
+        _index = (_index == 5 ? 1 : _index + 1);
+      });
+    });
   }
 
   @override
@@ -43,6 +54,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     _animationController.dispose();
     super.dispose();
   }
+
+  var _index = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +80,8 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                 top: 100,
                 child: Transform.scale(
                   scale: scale,
-                  child: Material(
-                    elevation: 10,
-                    color: Colors.blue.shade100,
-                    child: SizedBox(
-                      width: size.width * 0.8,
-                      height: size.height * 0.5,
-                    ),
+                  child: Card(
+                    index: _index == 5 ? 1 : _index + 1,
                   ),
                 ),
               ),
@@ -86,14 +94,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
                     offset: Offset(_animationController.value, 0),
                     child: Transform.rotate(
                       angle: angle * pi / 180,
-                      child: Material(
-                        elevation: 10,
-                        color: Colors.red.shade100,
-                        child: SizedBox(
-                          width: size.width * 0.8,
-                          height: size.height * 0.5,
-                        ),
-                      ),
+                      child: Card(index: _index),
                     ),
                   ),
                 ),
@@ -101,6 +102,33 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class Card extends StatelessWidget {
+  const Card({
+    super.key,
+    required this.index,
+  });
+
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    return Material(
+      elevation: 10,
+      borderRadius: BorderRadius.circular(10),
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: size.width * 0.8,
+        height: size.height * 0.5,
+        child: Image.asset(
+          "assets/covers/album-$index.png",
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
