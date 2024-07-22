@@ -32,7 +32,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     final shouldDismissed = _animationController.value.abs() >= bound;
 
     if (!shouldDismissed) {
-      _animationController.animateTo(0, curve: Curves.easeInOut);
+      _animationController.animateTo(0, curve: Curves.easeOut);
       return;
     }
 
@@ -40,7 +40,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     double target = (size.width + 100) * (goLeft ? -1 : 1);
 
     _animationController
-        .animateTo(target, curve: Curves.easeInOut)
+        .animateTo(target, curve: Curves.easeOut)
         .whenComplete(() {
       _animationController.value = 0;
       setState(() {
@@ -79,7 +79,7 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
               Positioned(
                 top: 100,
                 child: Transform.scale(
-                  scale: scale,
+                  scale: min(scale, 1.0),
                   child: Card(
                     index: _index == 5 ? 1 : _index + 1,
                   ),

@@ -38,3 +38,11 @@
   - `t`가 0 또는 1이 아니면 `lerp(t)` 함수의 반환값을 반환
   - `lerp(t)`는 `begin + (end - begin) * value`로 계산. 즉, `begin`에서 시작해서 `value`만큼의 값을 더해서 범위 안에 특정 값을 반환한다.
   - `AnimationController`의 `lowerBound`와 `upperBound`를 다른 값으로 변경하는 경우(e.g. `-width ~ width`), animation value를 0과 1 사이 값으로 정규화한 뒤 `t`에 넣어주면 해당 `Tween`에서의 값으로 변환 수 있다.
+
+## Transform
+
+- `Transform` : `child`에 transform을 적용하는 widget
+- `~Transition`은 explicit animation을 위한 widget. `Transform`은 animation이 고려되지 않음
+- `Transform.translate` : `Offset` 만큼 `child`의 위치를 이동시키는 widget
+- `Transform.scale` : `double` scale 만큼 `child`의 크기를 변경하는 widget
+- `Transform.rotate` : `double` angle 만큼 `child`의 크기를 변경하는 widget
