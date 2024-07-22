@@ -1,5 +1,11 @@
 # Swiping Gesture
 
+- `AnimationController` 하나로 여러 animation 및 motion의 sync를 맞추는 방법
+- `AnimationController`를 사용해서 여러 `Tween` animation을 만들 수도 있고,
+- `AnimatedBuilder.animation`에 `AnimationController`를 넣어서 하나의 animation value를 여러 곳에서 사용할 수도 있다.
+- `Tween`은 단순히 값의 범위라서 `value`로 값을 가져올 수 없는데, animation value를 `Tween.transform`을 사용해서 tween value로 변환시킬 수 있다.
+- 이렇게 `transform`으로 변환한 값은 `Tween.animate`로 만들어지는 animation value와 동일함
+
 ## Swipe gesture 감지
 
 - `GestureDetector`로 사용자 gesture 감지
