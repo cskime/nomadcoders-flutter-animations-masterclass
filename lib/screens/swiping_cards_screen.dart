@@ -14,14 +14,25 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
   late final size = MediaQuery.sizeOf(context);
   late final _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 2000),
+    duration: const Duration(milliseconds: 500),
     value: 0,
     lowerBound: (size.width + 100) * -1,
     upperBound: (size.width + 100),
   );
 
   late final _rotation = Tween<double>(begin: -15, end: 15);
-  late final _scale = Tween<double>(begin: 0.8, end: 1);
+  late final _cardScale = Tween<double>(begin: 0.8, end: 1);
+  late final _buttonScale = Tween<double>(begin: 1, end: 1.2);
+  late final _closeButtonColor = ColorTween(
+    begin: Colors.red,
+    end: Colors.white,
+  );
+  late final _checkButtonColor = ColorTween(
+    begin: Colors.green,
+    end: Colors.white,
+  );
+
+  var _animating = false;
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     _animationController.value += details.delta.dx;
@@ -39,9 +50,31 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
     final goLeft = _animationController.value.isNegative;
     double target = (size.width + 100) * (goLeft ? -1 : 1);
 
+    _animateTo(target);
+  }
+
+  void _closeButtonPressed() {
+    if (_animating) {
+      return;
+    }
+
+    _animateTo(-(size.width + 100));
+  }
+
+  void _checkButtonPressed() {
+    if (_animating) {
+      return;
+    }
+
+    _animateTo(size.width + 100);
+  }
+
+  void _animateTo(double target) {
+    _animating = true;
     _animationController
         .animateTo(target, curve: Curves.easeOut)
         .whenComplete(() {
+      _animating = false;
       _animationController.value = 0;
       setState(() {
         _index = (_index == 5 ? 1 : _index + 1);
@@ -70,34 +103,85 @@ class _SwipingCardsScreenState extends State<SwipingCardsScreen>
           final angle = _rotation.transform(
             (_animationController.value / 2 + size.width / 2) / size.width,
           );
-          final scale = _scale.transform(
-            _animationController.value.abs() / size.width,
+
+          final animationValue = _animationController.value.abs() / size.width;
+          final cardScale = min(
+            1.0,
+            _cardScale.transform(animationValue),
           );
-          return Stack(
-            alignment: Alignment.topCenter,
+          final buttonScale = min(
+            1.2,
+            _buttonScale.transform(animationValue),
+          );
+          final checkIconColor = _checkButtonColor.transform(animationValue);
+          final checkBackgroundColor =
+              _checkButtonColor.transform(1 - animationValue);
+          final closeIconColor = _closeButtonColor.transform(animationValue);
+          final closeBackgroundColor =
+              _closeButtonColor.transform(1 - animationValue);
+
+          final isLeft = _animationController.value < 0;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Positioned(
-                top: 100,
-                child: Transform.scale(
-                  scale: min(scale, 1.0),
-                  child: Card(
-                    index: _index == 5 ? 1 : _index + 1,
-                  ),
+              const SizedBox(height: 80),
+              SizedBox(
+                height: size.height * 0.5,
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Positioned(
+                      child: Transform.scale(
+                        scale: min(cardScale, 1.0),
+                        child: Card(
+                          index: _index == 5 ? 1 : _index + 1,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      child: GestureDetector(
+                        onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                        onHorizontalDragEnd: _onHorizontalDragEnd,
+                        child: Transform.translate(
+                          offset: Offset(_animationController.value, 0),
+                          child: Transform.rotate(
+                            angle: angle * pi / 180,
+                            child: Card(index: _index),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                top: 100,
-                child: GestureDetector(
-                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                  onHorizontalDragEnd: _onHorizontalDragEnd,
-                  child: Transform.translate(
-                    offset: Offset(_animationController.value, 0),
-                    child: Transform.rotate(
-                      angle: angle * pi / 180,
-                      child: Card(index: _index),
+              const SizedBox(height: 36),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Transform.scale(
+                    scale: isLeft ? buttonScale : 1,
+                    child: _Button(
+                      iconData: Icons.close,
+                      iconColor: isLeft ? closeIconColor : Colors.red,
+                      backgroundColor:
+                          isLeft ? closeBackgroundColor : Colors.white,
+                      onPressed: _closeButtonPressed,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 24),
+                  Transform.scale(
+                    scale: isLeft ? 1 : buttonScale,
+                    child: _Button(
+                      iconData: Icons.check,
+                      iconColor: isLeft ? Colors.green : checkIconColor,
+                      backgroundColor:
+                          isLeft ? Colors.white : checkBackgroundColor,
+                      onPressed: _checkButtonPressed,
+                    ),
+                  ),
+                ],
               ),
             ],
           );
@@ -128,6 +212,44 @@ class Card extends StatelessWidget {
         child: Image.asset(
           "assets/covers/album-$index.png",
           fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class _Button extends StatelessWidget {
+  const _Button({
+    required this.iconData,
+    this.iconColor,
+    this.backgroundColor,
+    this.onPressed,
+  });
+
+  final IconData iconData;
+  final Color? iconColor;
+  final Color? backgroundColor;
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(50),
+        color: backgroundColor,
+        child: Container(
+          width: 72,
+          height: 72,
+          decoration: BoxDecoration(
+              border: Border.all(color: Colors.white, width: 4),
+              shape: BoxShape.circle),
+          child: Icon(
+            iconData,
+            color: iconColor,
+            size: 40,
+          ),
         ),
       ),
     );
