@@ -22,6 +22,12 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
     });
   }
 
+  void _onAlbumTap(int index) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MusicPlayerDetailScreen(index: index),
+    ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -79,26 +85,31 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                   builder: (context, value, child) {
                     final difference = (value - index).abs() * 0.1;
                     final scale = 1 - difference;
-                    print("Scale of $index is $scale");
-                    return Transform.scale(
-                      scale: scale,
-                      child: Container(
-                        height: 350,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                                "assets/covers/album-${index + 1}.png"),
-                            fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () => _onAlbumTap(index),
+                      child: Hero(
+                        tag: index,
+                        child: Transform.scale(
+                          scale: scale,
+                          child: Container(
+                            height: 350,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                    "assets/covers/album-${index + 1}.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.4),
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: const Offset(0, 8),
+                                )
+                              ],
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.4),
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: const Offset(0, 8),
-                            )
-                          ],
                         ),
                       ),
                     );
@@ -121,6 +132,61 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MusicPlayerDetailScreen extends StatefulWidget {
+  const MusicPlayerDetailScreen({
+    super.key,
+    required this.index,
+  });
+
+  final int index;
+
+  @override
+  State<MusicPlayerDetailScreen> createState() =>
+      _MusicPlayerDetailScreenState();
+}
+
+class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Taylor Swift"),
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 30),
+          Align(
+            alignment: Alignment.center,
+            child: Hero(
+              tag: widget.index,
+              child: Container(
+                height: 350,
+                width: 350,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        "assets/covers/album-${widget.index + 1}.png"),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 8),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ],
