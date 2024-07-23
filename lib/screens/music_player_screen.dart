@@ -160,7 +160,19 @@ class MusicPlayerDetailScreen extends StatefulWidget {
       _MusicPlayerDetailScreenState();
 }
 
-class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
+class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
+    with SingleTickerProviderStateMixin {
+  late final _progressController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 1),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _progressController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.sizeOf(context);
@@ -198,9 +210,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
             ),
           ),
           const SizedBox(height: 50),
-          CustomPaint(
-            size: Size(screenSize.width - 80, 5),
-            painter: ProgressBarPainter(progressValue: 180),
+          AnimatedBuilder(
+            animation: _progressController,
+            builder: (context, child) => CustomPaint(
+              size: Size(screenSize.width - 80, 5),
+              painter: ProgressBarPainter(
+                progress: _progressController.value,
+              ),
+            ),
           )
         ],
       ),
@@ -211,10 +228,10 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
 class ProgressBarPainter extends CustomPainter {
   ProgressBarPainter({
     super.repaint,
-    required this.progressValue,
+    required this.progress,
   });
 
-  final double progressValue;
+  final double progress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -228,6 +245,7 @@ class ProgressBarPainter extends CustomPainter {
     );
     canvas.drawRRect(trackRect, trackPaint);
 
+    final progressValue = size.width * progress;
     final progressPaint = Paint()..color = Colors.grey.shade500;
     final progressRect = RRect.fromLTRBR(
       0,
@@ -246,7 +264,7 @@ class ProgressBarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(covariant ProgressBarPainter oldDelegate) {
+    return progress != oldDelegate.progress;
   }
 }
