@@ -29,3 +29,10 @@
 
 - 화면 전환 시 `tag`가 같은 두 widget 사이에 부드러운 transition을 만들어 주는 widget
 - Source route와 destination route에서 사용하는 `Hero` widget의 `tag`가 동일해야 함
+
+## Custom page transition
+
+- `MaterialPageRoute` 대신 `PageRouteBuilder` 사용
+- `transitionDuration`으로 transition 시간 변경 가능
+- `pageBuilder`로 들어오는 `animation` 값을 사용해서 transition 구현 (Scale, slide, fade 등)
+- `~Transition`으로 끝나는 explicit animation widget 사용
