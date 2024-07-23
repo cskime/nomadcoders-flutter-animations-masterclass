@@ -164,14 +164,35 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     with SingleTickerProviderStateMixin {
   late final _progressController = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 1),
-  )..repeat(reverse: true);
+    duration: const Duration(seconds: 10),
+  )..repeat();
 
   @override
   void dispose() {
     _progressController.dispose();
     super.dispose();
   }
+
+  String _timeStringFromDuration(Duration duration) {
+    final durationString = duration.toString();
+    return durationString
+        .split(".")
+        .first
+        .substring(durationString.indexOf(":") + 1);
+  }
+
+  Duration get _fromDuration =>
+      Duration.zero +
+      Duration(
+        seconds: (_progressController.value *
+                _progressController.duration!.inSeconds)
+            .toInt(),
+      );
+  Duration get _toDuration => Duration(
+        seconds: ((1 - _progressController.value) *
+                _progressController.duration!.inSeconds)
+            .toInt(),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -212,13 +233,60 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
           const SizedBox(height: 50),
           AnimatedBuilder(
             animation: _progressController,
-            builder: (context, child) => CustomPaint(
-              size: Size(screenSize.width - 80, 5),
-              painter: ProgressBarPainter(
-                progress: _progressController.value,
-              ),
+            builder: (context, child) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomPaint(
+                  size: Size(screenSize.width - 80, 5),
+                  painter: ProgressBarPainter(
+                    progress: _progressController.value,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Row(
+                    children: [
+                      Text(
+                        _timeStringFromDuration(_fromDuration),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        "-${_timeStringFromDuration(_toDuration)}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          )
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Taylor Swift",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            "A Film By Christoher Nolan - Original Motion Picture Soundtrack",
+            maxLines: 1,
+            overflow: TextOverflow.visible,
+            style: TextStyle(
+              fontSize: 18,
+            ),
+          ),
         ],
       ),
     );
