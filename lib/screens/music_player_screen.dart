@@ -163,6 +163,7 @@ class MusicPlayerDetailScreen extends StatefulWidget {
 class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Taylor Swift"),
@@ -196,8 +197,56 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 50),
+          CustomPaint(
+            size: Size(screenSize.width - 80, 5),
+            painter: ProgressBarPainter(progressValue: 180),
+          )
         ],
       ),
     );
+  }
+}
+
+class ProgressBarPainter extends CustomPainter {
+  ProgressBarPainter({
+    super.repaint,
+    required this.progressValue,
+  });
+
+  final double progressValue;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final trackPaint = Paint()..color = Colors.grey.shade300;
+    final trackRect = RRect.fromLTRBR(
+      0,
+      0,
+      size.width,
+      size.height,
+      const Radius.circular(10),
+    );
+    canvas.drawRRect(trackRect, trackPaint);
+
+    final progressPaint = Paint()..color = Colors.grey.shade500;
+    final progressRect = RRect.fromLTRBR(
+      0,
+      0,
+      progressValue,
+      size.height,
+      const Radius.circular(10),
+    );
+    canvas.drawRRect(progressRect, progressPaint);
+
+    canvas.drawCircle(
+      Offset(progressValue, size.height / 2),
+      10,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
