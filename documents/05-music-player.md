@@ -36,3 +36,9 @@
 - `transitionDuration`으로 transition 시간 변경 가능
 - `pageBuilder`로 들어오는 `animation` 값을 사용해서 transition 구현 (Scale, slide, fade 등)
 - `~Transition`으로 끝나는 explicit animation widget 사용
+
+## Marquee
+
+- 긴 text를 scroll해서 보여주는 HTML의 `marquee` element에서 따온 이름 (현재 deprecated)
+- `AnimationController`와 `SlideTransition`을 사용해서 구현 가능
+- `Text`는 `overflow`를 `TextOverflow.visible`로 설정하고, `softWrap`을 `false`로 설정해서 줄바꿈을 없애준다.
