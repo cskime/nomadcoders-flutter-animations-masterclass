@@ -14,10 +14,25 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
 
   int _currentPage = 0;
 
+  final _scrollOffset = ValueNotifier<double>(0);
+
   void _onPageChanged(int value) {
     setState(() {
       _currentPage = value;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(
+      () {
+        if (_pageController.page == null) {
+          return;
+        }
+        _scrollOffset.value = _pageController.page!;
+      },
+    );
   }
 
   @override
@@ -59,23 +74,35 @@ class _MusicPlayerScreenState extends State<MusicPlayerScreen> {
             itemBuilder: (context, index) => Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  height: 350,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("assets/covers/album-${index + 1}.png"),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 8),
-                      )
-                    ],
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: _scrollOffset,
+                  builder: (context, value, child) {
+                    final difference = (value - index).abs() * 0.1;
+                    final scale = 1 - difference;
+                    print("Scale of $index is $scale");
+                    return Transform.scale(
+                      scale: scale,
+                      child: Container(
+                        height: 350,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                "assets/covers/album-${index + 1}.png"),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 8),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
                 const Text(

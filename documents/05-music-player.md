@@ -7,6 +7,10 @@
 - `PageController.viewportFraction`
   - Page item의 크기 조정
   - 이 page가 view를 얼마나 차지하는지 비율
+- `PageController`에 listener를 추가해서 어떤 page를 scroll하고 있는지 알 수 있다. (`addListener`)
+  - Listener 안에서 `PageController.page` 속성을 통해 현재 가운데에 나타나는 page index를 알 수 있다.
+  - Page를 이동하는 동안, destination page index로 이동하는 scroll offset 값이 반환된다.
+  - 2 -> 3 page로 이동하고 있다면, 반환되는 값은 `2.0` ~ `3.0` 사잇값
 
 ## AnimatedSwitcher
 
