@@ -176,6 +176,11 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     end: const Offset(-1.0, 0),
   ).animate(_marqueeController);
 
+  late final _playPauseController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+  );
+
   @override
   void dispose() {
     _progressController.dispose();
@@ -203,6 +208,14 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                 _progressController.duration!.inSeconds)
             .toInt(),
       );
+
+  void _onPlayPauseTap() {
+    if (_playPauseController.isCompleted) {
+      _playPauseController.reverse();
+    } else {
+      _playPauseController.forward();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -299,6 +312,15 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               style: TextStyle(
                 fontSize: 18,
               ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onTap: _onPlayPauseTap,
+            child: AnimatedIcon(
+              icon: AnimatedIcons.play_pause,
+              size: 60,
+              progress: _playPauseController,
             ),
           ),
         ],

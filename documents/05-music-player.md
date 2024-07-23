@@ -42,3 +42,31 @@
 - 긴 text를 scroll해서 보여주는 HTML의 `marquee` element에서 따온 이름 (현재 deprecated)
 - `AnimationController`와 `SlideTransition`을 사용해서 구현 가능
 - `Text`는 `overflow`를 `TextOverflow.visible`로 설정하고, `softWrap`을 `false`로 설정해서 줄바꿈을 없애준다.
+
+## AnimatedIcon
+
+- Animation이 적용되는 icon 사용
+- `icon`에 `AnimatedIcons.~`로 icon 설정
+- `progress`에 animation value 전달
+- Animation이 실행됨에 따라 `AnimatedIconData`에 미리 정의된 대로 animation 실행
+
+## Lottie
+
+- AirBnB에서 만든 animation package
+- Flutter package를 사용하면 `AnimationController`로 lottie animation을 제어할 수 있다.
+- 무료 animation들 사용 가능
+- `Lottie.asset`으로 json file을 load
+- `Lottie.controller`에 `AnimationController`를 전달해서 animation 재생 제어
+- `Lottie.onLoaded` 함수로 들어오는 `composition.duration`을 `AnimationController.duration`에 전달해서 animation 재생시간을 동기화 시킬 수 있다.
+
+```dart
+Lottie.asset(
+    "assets/animations/play-lottie.json",
+    controller: _playPauseController,
+    onLoaded: (composition) {
+        _playPauseController.duration = composition.duration;
+    },
+    width: 200,
+    height: 200,
+),
+```
