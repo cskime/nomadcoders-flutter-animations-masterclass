@@ -76,7 +76,7 @@ Lottie.asset(
 - 일정 시간 동안에 여러 animation을 단계별로 나눠서 실행시키는 방법
 - Animation에 사용할 각각의 `Tween`을 `animate` method를 사용해서 `Animation`으로 변환할 때, `AnimationController` 대신 `CurvedAnimation` 사용
 - `CurvedAnimation.curves`에 `Curves` 대신 `Interval` class 사용
-- `Interval` class
+- `Interval` class : `Tween`을 animation에서 어떤 구간에 실행시킬지 설정
   - `begin` : 전체 animation에서 특정 `Tween` animation이 시작하는 지점 명시
   - `end` : 전체 animation에서 특정 `Tween` animation이 끝나는 지점 명시
   - `curves` : 구간 animation에 적용할 curve
