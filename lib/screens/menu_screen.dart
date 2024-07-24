@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animations_masterclass/screens/apple_watch_screen.dart';
+import 'package:flutter_animations_masterclass/screens/container_transform_screen.dart';
 import 'package:flutter_animations_masterclass/screens/explicit_animations_screen.dart';
 import 'package:flutter_animations_masterclass/screens/implicit_animations_screen.dart';
 import 'package:flutter_animations_masterclass/screens/music_player_screen.dart';
@@ -65,6 +66,13 @@ class MenuScreen extends StatelessWidget {
                 const RiveScreen(),
               ),
               child: const Text("Rive"),
+            ),
+            ElevatedButton(
+              onPressed: () => _goToPage(
+                context,
+                const ContainerTransformScreen(),
+              ),
+              child: const Text("Container Transform"),
             ),
           ],
         ),
