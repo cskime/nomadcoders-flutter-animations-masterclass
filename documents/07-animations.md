@@ -18,7 +18,7 @@
 ## Shared Axis Animation
 
 - 고정된 element는 그대로 두고 일부 widget만 변경할 때 사용
-- `PageTransitionSwitcher` widget 사용
+- `PageTransitionSwitcher` widget을 사용하고, `transitionBuilder`에서 `SharedAxisTransition`을 사용한다.
 - `transitionBuilder`
   - `child` widget이 변경될 때 새 `child` widget에 animation 추가
   - `primaryAnimation` : child가 나타날 때(enterance) 및 사라질 때(exit) 동작하는 animation
@@ -31,3 +31,12 @@
     - 이 때, `child` 자체가 바뀌어야 switcher가 다른 child로 인식하고 animation을 실행시킴
     - **따라서, `child` widget에 key를 부여해야 한다.**
 - `duration`으로 switching animation 시간 설정
+
+## Fade Through Animation
+
+- 서로 관련 없는 UI 요소들 사이의 전환
+- 이전 UI 사라지고 다른 UI가 나타나는 효과
+- 화면의 일부 UI에 적용
+- Shared axis animation과 비슷하게 `PageTransitionSwitcher` widget을 사용하고, `transitionBuilder`에서 `FadeThroughTransition`을 사용한다.
+- `FadeThroughTransition`
+  - `fillColor` : transition 중간에 background color 변경
