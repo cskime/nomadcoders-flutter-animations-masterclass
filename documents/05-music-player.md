@@ -73,6 +73,8 @@ Lottie.asset(
 
 ## Staggered Animations
 
+> 전체 animation 시간을 먼저 정하고, 그 시간 안에서 어떤 animation을 얼마나 실행시킬지 조절
+
 - 일정 시간 동안에 여러 animation을 단계별로 나눠서 실행시키는 방법
 - Animation에 사용할 각각의 `Tween`을 `animate` method를 사용해서 `Animation`으로 변환할 때, `AnimationController` 대신 `CurvedAnimation` 사용
 - `CurvedAnimation.curves`에 `Curves` 대신 `Interval` class 사용

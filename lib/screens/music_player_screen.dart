@@ -184,6 +184,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   late final _menuController = AnimationController(
     vsync: this,
     duration: const Duration(seconds: 3),
+    reverseDuration: const Duration(seconds: 1),
   );
 
   final _menuCurve = Curves.easeInOutCubic;
@@ -204,7 +205,7 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   ).animate(
     CurvedAnimation(
       parent: _menuController,
-      curve: Interval(0.2, 0.4, curve: _menuCurve),
+      curve: Interval(0.1, 0.4, curve: _menuCurve),
     ),
   );
 
@@ -218,13 +219,13 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     ),
   );
 
-  late final _profileButtonOffset = Tween<Offset>(
+  late final _logoutButtonOffset = Tween<Offset>(
     begin: const Offset(-1, 0),
     end: Offset.zero,
   ).animate(
     CurvedAnimation(
       parent: _menuController,
-      curve: Interval(0.4, 0.7, curve: _menuCurve),
+      curve: Interval(0.8, 1.0, curve: _menuCurve),
     ),
   );
 
@@ -232,6 +233,8 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   void dispose() {
     _progressController.dispose();
     _marqueeController.dispose();
+    _playPauseController.dispose();
+    _menuController.dispose();
     super.dispose();
   }
 
@@ -290,9 +293,35 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
   }
 
   final List<Map<String, dynamic>> _menus = [
-    {"icon": Icons.person, "text": "Profile"},
-    {"icon": Icons.notifications, "text": "Notifications"},
-    {"icon": Icons.settings, "text": "Settings"},
+    {
+      "icon": Icons.person,
+      "text": "Profile",
+    },
+    {
+      "icon": Icons.notifications,
+      "text": "Notifications",
+    },
+    {
+      "icon": Icons.settings,
+      "text": "Settings",
+    },
+  ];
+
+  late final _menuButtonAnimations = [
+    for (int index = 0; index < _menus.length; index++)
+      Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _menuController,
+          curve: Interval(
+            0.4 + (0.1 * index),
+            0.7 + (0.1 * index),
+            curve: _menuCurve,
+          ),
+        ),
+      ),
   ];
 
   @override
@@ -318,18 +347,18 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                for (final menu in _menus) ...[
+                for (int index = 0; index < _menus.length; index++) ...[
                   SlideTransition(
-                    position: _profileButtonOffset,
+                    position: _menuButtonAnimations[index],
                     child: Row(
                       children: [
                         Icon(
-                          menu["icon"],
+                          _menus[index]["icon"],
                           color: Colors.grey.shade200,
                         ),
                         const SizedBox(width: 10),
                         Text(
-                          menu["text"],
+                          _menus[index]["text"],
                           style: TextStyle(
                             color: Colors.grey.shade200,
                             fontSize: 18,
@@ -341,21 +370,24 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
                   const SizedBox(height: 30),
                 ],
                 const Spacer(),
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Logout",
-                      style: TextStyle(
+                SlideTransition(
+                  position: _logoutButtonOffset,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.logout,
                         color: Colors.red,
-                        fontSize: 18,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 10),
+                      Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 100),
               ],
