@@ -57,3 +57,10 @@
   - Animation의 한 시점. 각 keyframe들이 animation을 다르게 보이게 함
   - Keyframe으로 저장할 속성을 지정해 두고 timeline에서 특정 시점에 element를 변형시키면, 변경된 상태가 keyframe으로 저장됨
   - 이렇게 저장된 keyframe들 사이에 animation이 생성된다.
+
+## Custom State Machine
+
+- `Animations`에서 timeline 만들고 시간 흐름에 따른 animation 만들기
+- `Inputs`에서 input 만들고, input에 따라 timeline들이 서로 전환되게 연결
+- `Listeners`에서 특정 target element에 대해 pointer up/down 등이 발생할 때 `Inputs`에서 정의한 input 상태를 바꿔줌
+- `Listener`에 의해 input이 변경되면 state가 변경됨
