@@ -181,6 +181,11 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     duration: const Duration(milliseconds: 500),
   );
 
+  late final _menuController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 5),
+  );
+
   @override
   void dispose() {
     _progressController.dispose();
@@ -234,144 +239,217 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     _volume.value = _volume.value.clamp(0, screenSize.width - 80);
   }
 
-  void _onMenuPressed() {
-    print("toggleMenu");
+  void _openMenu() {
+    _menuController.forward();
   }
+
+  void _closeMenu() {
+    _menuController.reverse();
+  }
+
+  final List<Map<String, dynamic>> _menus = [
+    {"icon": Icons.person, "text": "Profile"},
+    {"icon": Icons.notifications, "text": "Notifications"},
+    {"icon": Icons.settings, "text": "Settings"},
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Taylor Swift"),
-        actions: [
-          IconButton(
-            onPressed: _onMenuPressed,
-            icon: const Icon(Icons.menu),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 30),
-          Align(
-            alignment: Alignment.center,
-            child: Hero(
-              tag: widget.index,
-              child: Container(
-                height: 350,
-                width: 350,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                        "assets/covers/album-${widget.index + 1}.png"),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 8),
-                    )
-                  ],
-                ),
-              ),
+    return Stack(
+      children: [
+        // Menu
+        Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: _closeMenu,
             ),
           ),
-          const SizedBox(height: 50),
-          AnimatedBuilder(
-            animation: _progressController,
-            builder: (context, child) => Column(
-              mainAxisSize: MainAxisSize.min,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
               children: [
-                CustomPaint(
-                  size: Size(screenSize.width - 80, 5),
-                  painter: ProgressBarPainter(
-                    progress: _progressController.value,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
+                const SizedBox(height: 30),
+                for (final menu in _menus) ...[
+                  Row(
                     children: [
-                      Text(
-                        _timeStringFromDuration(_fromDuration),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      Icon(
+                        menu["icon"],
+                        color: Colors.grey.shade200,
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 10),
                       Text(
-                        "-${_timeStringFromDuration(_toDuration)}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
+                        menu["text"],
+                        style: TextStyle(
+                          color: Colors.grey.shade200,
+                          fontSize: 18,
                         ),
                       ),
                     ],
                   ),
+                  const SizedBox(height: 30),
+                ],
+                const Spacer(),
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      "Logout",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 100),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          const Text(
-            "Taylor Swift",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 5),
-          SlideTransition(
-            position: _marqueeTween,
-            child: const Text(
-              "A Film By Christoher Nolan - Original Motion Picture Soundtrack",
-              maxLines: 1,
-              overflow: TextOverflow.visible,
-              softWrap: false,
-              style: TextStyle(
-                fontSize: 18,
+        ),
+
+        // Music Player
+        Scaffold(
+          appBar: AppBar(
+            title: const Text("Taylor Swift"),
+            actions: [
+              IconButton(
+                onPressed: _openMenu,
+                icon: const Icon(Icons.menu),
               ),
-            ),
+            ],
           ),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onTap: _onPlayPauseTap,
-            child: AnimatedIcon(
-              icon: AnimatedIcons.play_pause,
-              size: 60,
-              progress: _playPauseController,
-            ),
-          ),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onHorizontalDragStart: (_) => _toggleDragging(),
-            onHorizontalDragEnd: (_) => _toggleDragging(),
-            onHorizontalDragUpdate: _onVolumeUpdate,
-            child: AnimatedScale(
-              scale: _dragging ? 1.1 : 1,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.bounceOut,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: ValueListenableBuilder(
-                  valueListenable: _volume,
-                  builder: (context, value, child) => CustomPaint(
-                    size: Size(screenSize.width - 80, 50),
-                    painter: VolumePainter(volume: value),
+          body: Column(
+            children: [
+              const SizedBox(height: 30),
+              Align(
+                alignment: Alignment.center,
+                child: Hero(
+                  tag: widget.index,
+                  child: Container(
+                    height: 350,
+                    width: 350,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                            "assets/covers/album-${widget.index + 1}.png"),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.4),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 8),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
+              const SizedBox(height: 50),
+              AnimatedBuilder(
+                animation: _progressController,
+                builder: (context, child) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomPaint(
+                      size: Size(screenSize.width - 80, 5),
+                      painter: ProgressBarPainter(
+                        progress: _progressController.value,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Row(
+                        children: [
+                          Text(
+                            _timeStringFromDuration(_fromDuration),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            "-${_timeStringFromDuration(_toDuration)}",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Taylor Swift",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 5),
+              SlideTransition(
+                position: _marqueeTween,
+                child: const Text(
+                  "A Film By Christoher Nolan - Original Motion Picture Soundtrack",
+                  maxLines: 1,
+                  overflow: TextOverflow.visible,
+                  softWrap: false,
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onTap: _onPlayPauseTap,
+                child: AnimatedIcon(
+                  icon: AnimatedIcons.play_pause,
+                  size: 60,
+                  progress: _playPauseController,
+                ),
+              ),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onHorizontalDragStart: (_) => _toggleDragging(),
+                onHorizontalDragEnd: (_) => _toggleDragging(),
+                onHorizontalDragUpdate: _onVolumeUpdate,
+                child: AnimatedScale(
+                  scale: _dragging ? 1.1 : 1,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.bounceOut,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ValueListenableBuilder(
+                      valueListenable: _volume,
+                      builder: (context, value, child) => CustomPaint(
+                        size: Size(screenSize.width - 80, 50),
+                        painter: VolumePainter(volume: value),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

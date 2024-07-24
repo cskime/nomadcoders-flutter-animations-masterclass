@@ -70,3 +70,12 @@ Lottie.asset(
     height: 200,
 ),
 ```
+
+## Staggered Animations
+
+- 일정 시간 동안에 여러 animation을 단계별로 나눠서 실행시키는 방법
+
+## Tips
+
+- `num` type에 대해 `clamp` method를 사용하면 이 method를 호출한 값을 `lowerLimit`과 `upperLimit` 사잇값으로 제한시킬 수 있다. `min` 또는 `max`를 사용하는 것 보다 간편
+- Collection for 또는 collection if에서 두 개 이상의 widget을 넣고 싶을 때, spread 연산자(`...`)를 사용해서 widget들을 펼쳐주는 방식을 사용할 수 있다.
