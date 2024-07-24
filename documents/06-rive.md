@@ -43,3 +43,16 @@
 - `StateMachineController.findInput<T>(name)`으로 load된 animation이 갖고 있는 input을 가져옴
 - `input.value`로 현재 input 값 가져오기
 - `input.change`로 input 값 변경
+
+## Custom Rive Animation
+
+- Rive editor에서 custom animation 생성
+- Timeline
+  - State 1개
+  - State machine이 언제 어떤 timeline을 표시할지 결정
+  - Artboard에서 element를 선택한 뒤, timeline과 연결
+  - Timeline에서 실제 animation을 만든다.
+- Keyframe
+  - Animation의 한 시점. 각 keyframe들이 animation을 다르게 보이게 함
+  - Keyframe으로 저장할 속성을 지정해 두고 timeline에서 특정 시점에 element를 변형시키면, 변경된 상태가 keyframe으로 저장됨
+  - 이렇게 저장된 keyframe들 사이에 animation이 생성된다.
