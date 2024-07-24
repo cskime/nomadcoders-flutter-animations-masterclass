@@ -22,6 +22,7 @@
 - Rive editor를 통해 animation의 structure를 볼 수 있음
 - 이 structure를 기반으로 app에서도 같은 이름으로 특정 element에 접근 가능
 - `RiveAnimation.artboard` : 실행시킬 rive animation의 artboard 이름
+- `RiveAnimation.fit`에 `BoxFit` 설정 가능
 
 ### Get state machine
 

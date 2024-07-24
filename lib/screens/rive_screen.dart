@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 
@@ -29,17 +31,32 @@ class _RiveScreenState extends State<RiveScreen> {
       appBar: AppBar(
         title: const Text("Rive"),
       ),
-      body: Center(
-        child: Container(
-          width: double.infinity,
-          color: const Color(0xFFFF2ECC),
-          child: RiveAnimation.asset(
-            "assets/animations/stars-animation.riv",
-            artboard: "artboard",
+      body: Stack(
+        children: [
+          RiveAnimation.asset(
+            "assets/animations/balls-animation.riv",
+            artboard: "main",
             stateMachines: const ["state"],
             onInit: _onInit,
+            fit: BoxFit.cover,
           ),
-        ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 50,
+                sigmaY: 50,
+              ),
+              child: const Center(
+                child: Text(
+                  "Welcome to AI App",
+                  style: TextStyle(
+                    fontSize: 28,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
