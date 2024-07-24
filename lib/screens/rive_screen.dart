@@ -15,13 +15,12 @@ class _RiveScreenState extends State<RiveScreen> {
     _stateMachineController = StateMachineController.fromArtboard(
       artboard,
       "state",
+      onStateChange: (stateMachineName, stateName) {
+        print(stateMachineName);
+        print(stateName);
+      },
     )!;
     artboard.addController(_stateMachineController);
-  }
-
-  void _togglePanel() {
-    final input = _stateMachineController.findInput<bool>("panelActive")!;
-    input.change(!input.value);
   }
 
   @override
@@ -31,23 +30,15 @@ class _RiveScreenState extends State<RiveScreen> {
         title: const Text("Rive"),
       ),
       body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 400,
-              width: double.infinity,
-              child: RiveAnimation.asset(
-                "assets/animations/old-man-animation.riv",
-                artboard: "main",
-                stateMachines: const ["state"],
-                onInit: _onInit,
-              ),
-            ),
-            ElevatedButton(
-              onPressed: _togglePanel,
-              child: const Text("Go!"),
-            )
-          ],
+        child: Container(
+          width: double.infinity,
+          color: const Color(0xFFFF2ECC),
+          child: RiveAnimation.asset(
+            "assets/animations/stars-animation.riv",
+            artboard: "artboard",
+            stateMachines: const ["state"],
+            onInit: _onInit,
+          ),
         ),
       ),
     );

@@ -29,6 +29,9 @@
 - `RiveAnimation.onInit` : Rive animation이 초기화된 후 호출되는 함수
   - `Artboard` : animation이 위치한 layer
   - `StateMachineController.fromArtboard`로 `StateMachineController` 초기화
+    - `artboard` : `onInput` 함수가 반환하는 `Artboard` 객체를 넣을 수 있음
+    - `stateMachineName` : 가져올 state machine 이름
+    - `onStateChange` : state 변경될 때 listener
   - 초기화한 controller를 artboard에 추가
     - Artboard는 animation이 재생되는 곳
     - State는 animation을 재싱시킴
