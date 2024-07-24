@@ -217,12 +217,38 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
     }
   }
 
+  bool _dragging = false;
+
+  void _toggleDragging() {
+    setState(() {
+      _dragging = !_dragging;
+    });
+  }
+
+  late final screenSize = MediaQuery.sizeOf(context);
+
+  final _volume = ValueNotifier<double>(0);
+
+  void _onVolumeUpdate(DragUpdateDetails details) {
+    _volume.value += details.delta.dx;
+    _volume.value = _volume.value.clamp(0, screenSize.width - 80);
+  }
+
+  void _onMenuPressed() {
+    print("toggleMenu");
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Taylor Swift"),
+        actions: [
+          IconButton(
+            onPressed: _onMenuPressed,
+            icon: const Icon(Icons.menu),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -323,6 +349,27 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
               progress: _playPauseController,
             ),
           ),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onHorizontalDragStart: (_) => _toggleDragging(),
+            onHorizontalDragEnd: (_) => _toggleDragging(),
+            onHorizontalDragUpdate: _onVolumeUpdate,
+            child: AnimatedScale(
+              scale: _dragging ? 1.1 : 1,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.bounceOut,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: ValueListenableBuilder(
+                  valueListenable: _volume,
+                  builder: (context, value, child) => CustomPaint(
+                    size: Size(screenSize.width - 80, 50),
+                    painter: VolumePainter(volume: value),
+                  ),
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -370,5 +417,30 @@ class ProgressBarPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant ProgressBarPainter oldDelegate) {
     return progress != oldDelegate.progress;
+  }
+}
+
+class VolumePainter extends CustomPainter {
+  VolumePainter({
+    super.repaint,
+    required this.volume,
+  });
+
+  final double volume;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final trackPaint = Paint()..color = Colors.grey.shade300;
+    final trackRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    canvas.drawRect(trackRect, trackPaint);
+
+    final volumePaint = Paint()..color = Colors.grey.shade500;
+    final volumeRect = Rect.fromLTWH(0, 0, volume, size.height);
+    canvas.drawRect(volumeRect, volumePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant VolumePainter oldDelegate) {
+    return volume != oldDelegate.volume;
   }
 }
