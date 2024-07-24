@@ -183,7 +183,29 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
 
   late final _menuController = AnimationController(
     vsync: this,
-    duration: const Duration(seconds: 5),
+    duration: const Duration(seconds: 2),
+  );
+
+  final _menuCurve = Curves.easeInOutCubic;
+
+  late final _screenScale = Tween<double>(
+    begin: 1,
+    end: 0.7,
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(0, 0.5, curve: _menuCurve),
+    ),
+  );
+
+  late final _screenOffset = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0.5, 0),
+  ).animate(
+    CurvedAnimation(
+      parent: _menuController,
+      curve: Interval(0.5, 1, curve: _menuCurve),
+    ),
   );
 
   @override
@@ -316,137 +338,143 @@ class _MusicPlayerDetailScreenState extends State<MusicPlayerDetailScreen>
         ),
 
         // Music Player
-        Scaffold(
-          appBar: AppBar(
-            title: const Text("Taylor Swift"),
-            actions: [
-              IconButton(
-                onPressed: _openMenu,
-                icon: const Icon(Icons.menu),
+        SlideTransition(
+          position: _screenOffset,
+          child: ScaleTransition(
+            scale: _screenScale,
+            child: Scaffold(
+              appBar: AppBar(
+                title: const Text("Taylor Swift"),
+                actions: [
+                  IconButton(
+                    onPressed: _openMenu,
+                    icon: const Icon(Icons.menu),
+                  ),
+                ],
               ),
-            ],
-          ),
-          body: Column(
-            children: [
-              const SizedBox(height: 30),
-              Align(
-                alignment: Alignment.center,
-                child: Hero(
-                  tag: widget.index,
-                  child: Container(
-                    height: 350,
-                    width: 350,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            "assets/covers/album-${widget.index + 1}.png"),
-                        fit: BoxFit.cover,
+              body: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Hero(
+                      tag: widget.index,
+                      child: Container(
+                        height: 350,
+                        width: 350,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                                "assets/covers/album-${widget.index + 1}.png"),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.4),
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: const Offset(0, 8),
+                            )
+                          ],
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.4),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 8),
-                        )
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  AnimatedBuilder(
+                    animation: _progressController,
+                    builder: (context, child) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomPaint(
+                          size: Size(screenSize.width - 80, 5),
+                          painter: ProgressBarPainter(
+                            progress: _progressController.value,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Row(
+                            children: [
+                              Text(
+                                _timeStringFromDuration(_fromDuration),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                "-${_timeStringFromDuration(_toDuration)}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 50),
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (context, child) => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomPaint(
-                      size: Size(screenSize.width - 80, 5),
-                      painter: ProgressBarPainter(
-                        progress: _progressController.value,
-                      ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "Taylor Swift",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Row(
-                        children: [
-                          Text(
-                            _timeStringFromDuration(_fromDuration),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            "-${_timeStringFromDuration(_toDuration)}",
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Taylor Swift",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 5),
-              SlideTransition(
-                position: _marqueeTween,
-                child: const Text(
-                  "A Film By Christoher Nolan - Original Motion Picture Soundtrack",
-                  maxLines: 1,
-                  overflow: TextOverflow.visible,
-                  softWrap: false,
-                  style: TextStyle(
-                    fontSize: 18,
                   ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              GestureDetector(
-                onTap: _onPlayPauseTap,
-                child: AnimatedIcon(
-                  icon: AnimatedIcons.play_pause,
-                  size: 60,
-                  progress: _playPauseController,
-                ),
-              ),
-              const SizedBox(height: 30),
-              GestureDetector(
-                onHorizontalDragStart: (_) => _toggleDragging(),
-                onHorizontalDragEnd: (_) => _toggleDragging(),
-                onHorizontalDragUpdate: _onVolumeUpdate,
-                child: AnimatedScale(
-                  scale: _dragging ? 1.1 : 1,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.bounceOut,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: ValueListenableBuilder(
-                      valueListenable: _volume,
-                      builder: (context, value, child) => CustomPaint(
-                        size: Size(screenSize.width - 80, 50),
-                        painter: VolumePainter(volume: value),
+                  const SizedBox(height: 5),
+                  SlideTransition(
+                    position: _marqueeTween,
+                    child: const Text(
+                      "A Film By Christoher Nolan - Original Motion Picture Soundtrack",
+                      maxLines: 1,
+                      overflow: TextOverflow.visible,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 18,
                       ),
                     ),
                   ),
-                ),
-              )
-            ],
+                  const SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: _onPlayPauseTap,
+                    child: AnimatedIcon(
+                      icon: AnimatedIcons.play_pause,
+                      size: 60,
+                      progress: _playPauseController,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  GestureDetector(
+                    onHorizontalDragStart: (_) => _toggleDragging(),
+                    onHorizontalDragEnd: (_) => _toggleDragging(),
+                    onHorizontalDragUpdate: _onVolumeUpdate,
+                    child: AnimatedScale(
+                      scale: _dragging ? 1.1 : 1,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.bounceOut,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: ValueListenableBuilder(
+                          valueListenable: _volume,
+                          builder: (context, value, child) => CustomPaint(
+                            size: Size(screenSize.width - 80, 50),
+                            painter: VolumePainter(volume: value),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ],
