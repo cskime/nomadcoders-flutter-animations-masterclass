@@ -182,6 +182,48 @@ class CardDetailScreen extends StatelessWidget {
               tag: index,
               child: CreditCard(index: index, expanded: false),
             ),
+            ...[
+              for (final index in [0, 1, 2, 3, 4, 5])
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ListTile(
+                    tileColor: Colors.grey.shade100,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    leading: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.red,
+                      ),
+                      child: const Icon(
+                        Icons.shopping_bag,
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      "Uniqlo $index",
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      "Gangnam Brranch",
+                      style: TextStyle(color: Colors.grey.shade800),
+                    ),
+                    trailing: const Text(
+                      r"$452,123",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+            ]
+                .animate(interval: 500.ms)
+                .fadeIn()
+                .flip(begin: -0.5, end: 0, curve: Curves.easeInOut),
           ],
         ),
       ),
