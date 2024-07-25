@@ -34,6 +34,11 @@
 - `AnimateList`도 `animate()` 및 다른 shortcut method들을 사용할 수 있다.
   - `Widget.animate()` -> `Animate` 반환
   - `List<Widget>.animate()` -> `AnimateList` 반환. 이 때, `animate()`에 `interval` 설정 가능
+- `target`
+  - Animation은 0에서 1로 감 (0% -> 100%)
+  - `animate()` method 호출 시 `target`을 1로 설정하면 forward 실행
+  - `animate()` method 호출 시 `target`을 0으로 설정하면 reverse 실행
+  - Animation을 0부터 `target`까지만 실행시키는 것. default 1
 
 ## Misc.
 

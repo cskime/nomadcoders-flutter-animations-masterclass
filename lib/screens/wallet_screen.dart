@@ -9,6 +9,20 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  bool _expanded = false;
+
+  void _onExpand() {
+    setState(() {
+      _expanded = true;
+    });
+  }
+
+  void _onShrink() {
+    setState(() {
+      _expanded = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,15 +31,36 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const CreditCard(backgroundColor: Colors.purple),
-            const CreditCard(backgroundColor: Colors.black),
-            const CreditCard(backgroundColor: Colors.green),
-          ]
-              .animate(interval: 500.ms)
-              .fadeIn(begin: 0)
-              .slideX(begin: -1, end: 0),
+        child: GestureDetector(
+          onTap: _onExpand,
+          onVerticalDragEnd: (_) => _onShrink(),
+          child: Column(
+            children: [
+              const CreditCard(backgroundColor: Colors.purple)
+                  .animate(
+                    target: _expanded ? 0 : 1,
+                    delay: 1.5.seconds,
+                  )
+                  .flipV(end: 0.1),
+              const CreditCard(backgroundColor: Colors.black)
+                  .animate(
+                    target: _expanded ? 0 : 1,
+                    delay: 1.5.seconds,
+                  )
+                  .flipV(end: 0.1)
+                  .slideY(end: -0.8),
+              const CreditCard(backgroundColor: Colors.green)
+                  .animate(
+                    target: _expanded ? 0 : 1,
+                    delay: 1.5.seconds,
+                  )
+                  .flipV(end: 0.1)
+                  .slideY(end: -1.6),
+            ]
+                .animate(interval: 500.ms)
+                .fadeIn(begin: 0)
+                .slideX(begin: -1, end: 0),
+          ),
         ),
       ),
     );
