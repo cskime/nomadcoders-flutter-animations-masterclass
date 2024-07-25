@@ -50,3 +50,9 @@
 - User event를 흡수해서(absorbing) child widget에게 user event가 전달되는 것을 제어함
 - `GestureDetector`가 중첩될 때, 하위 detector에게 event를 전달할지 말지 결정할 때 사용할 수 있다.
 - `AbsorbPointer.absorbing`이 `true`일 때 child detector에게 user event를 전달하지 않는다.
+
+## Bug Fix
+
+- 화면 전환 시 `Text`를 갖고 있는 widget이 잠깐동안 `Scaffold`가 없을 때 처럼 style이 깨지는 버그 존재
+- `Scaffold` A에서 `Scaffold` B로 이동하는 사이에 잠깐 동안 `Scaffold`가 없는 순간 때문에 생기는 문제
+- `Text`를 갖고 있는 widget을 `Material` widget으로 감싸서 해결할 수 있다.
