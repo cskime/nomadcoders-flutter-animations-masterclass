@@ -36,20 +36,29 @@ class _WalletScreenState extends State<WalletScreen> {
           onVerticalDragEnd: (_) => _onShrink(),
           child: Column(
             children: [
-              const CreditCard(backgroundColor: Colors.purple)
+              CreditCard(
+                backgroundColor: Colors.purple,
+                expanded: _expanded,
+              )
                   .animate(
                     target: _expanded ? 0 : 1,
                     delay: 1.5.seconds,
                   )
                   .flipV(end: 0.1),
-              const CreditCard(backgroundColor: Colors.black)
+              CreditCard(
+                backgroundColor: Colors.black,
+                expanded: _expanded,
+              )
                   .animate(
                     target: _expanded ? 0 : 1,
                     delay: 1.5.seconds,
                   )
                   .flipV(end: 0.1)
                   .slideY(end: -0.8),
-              const CreditCard(backgroundColor: Colors.green)
+              CreditCard(
+                backgroundColor: Colors.green,
+                expanded: _expanded,
+              )
                   .animate(
                     target: _expanded ? 0 : 1,
                     delay: 1.5.seconds,
@@ -71,75 +80,87 @@ class CreditCard extends StatelessWidget {
   const CreditCard({
     super.key,
     required this.backgroundColor,
+    required this.expanded,
   });
 
   final Color backgroundColor;
+  final bool expanded;
+
+  void _onTap() {
+    print("Tapped");
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: backgroundColor,
-      ),
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 100,
+    return AbsorbPointer(
+      absorbing: !expanded,
+      child: GestureDetector(
+        onTap: _onTap,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: backgroundColor,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+          child: Column(
             children: [
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Nomad Coders",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
-                    "**** **** **75",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 100,
               ),
-              Stack(
-                clipBehavior: Clip.none,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Positioned(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.red,
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nomad Coders",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 20,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.amber,
+                      Text(
+                        "**** **** **75",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 20,
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               )
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }

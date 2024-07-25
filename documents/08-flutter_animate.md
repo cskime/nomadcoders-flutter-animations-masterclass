@@ -44,3 +44,9 @@
 
 - `num`을 확장해서 `Duration`을 만들어 주는 extension 제공
   - `500.seconds` => `Duration(seconds: 5)`
+
+## AbsorbPointer
+
+- User event를 흡수해서(absorbing) child widget에게 user event가 전달되는 것을 제어함
+- `GestureDetector`가 중첩될 때, 하위 detector에게 event를 전달할지 말지 결정할 때 사용할 수 있다.
+- `AbsorbPointer.absorbing`이 `true`일 때 child detector에게 user event를 전달하지 않는다.
