@@ -25,6 +25,15 @@
   - 다른 shortcut method들을 연달아 호출할 때 중간에 `then()` 사용
   - `then()` 이전 animation들이 모두 끝난 뒤에 다음 animation 실행
   - `Interval`을 사용해서 연결되는 animation을 만드는 것에 활용 가능
+- `AnimateList` widget을 사용해서 여러 widget들에 animation을 적용하고 상호작용하게 만들 수 있다.
+  - `List<T>`의 확장이므로 `Column.children`에도 넣을 수 있다.
+  - `interval`로 각 element별로 실행되는 interval 설정
+  - `effects`에 각 element별로 적용할 effect 설정
+  - `children`에 animation을 적용할 widget list 전달
+  - 각 widget들이 `interval`동안 `effects`에 설정된 animation들을 `Effect.duration`동안 실행되고, `interval` 이후 다음 widget에 대해 animation 실행 반복
+- `AnimateList`도 `animate()` 및 다른 shortcut method들을 사용할 수 있다.
+  - `Widget.animate()` -> `Animate` 반환
+  - `List<Widget>.animate()` -> `AnimateList` 반환. 이 때, `animate()`에 `interval` 설정 가능
 
 ## Misc.
 
