@@ -24,6 +24,7 @@
 - 아래에 깔린 widget들을 배경으로(backdrop) 만드는 filter를 적용할 수 있는 widget
 - `BackdropFilter.filter`에 설정한 `ImageFilter`는 `child` widget에 적용된다.
 - `ImageFilter.blur(sigmaX,sigmaY)`를 사용하면 gaussian blur filter를 사용할 수 있다.
+- `BackdropFilter`라는 widget은 `child`에 `ImageFilter`를 적용하기 위한 용도. `child`에 투명도가 있어야 배경이 보인다.
 
 ## Hero animation
 
